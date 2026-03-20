@@ -1,0 +1,27 @@
+{
+  "X1_temperature_2m_C": {
+    "mean": 18.692999999999998,
+    "variance": 37.25035454545455,
+    "count": 100
+  },
+  "X2_relative_humidity_2m_pct": {
+    "mean": 50.77,
+    "variance": 339.39101010101007,
+    "count": 100
+  },
+  "X3_surface_pressure_hPa": {
+    "mean": 1004.675,
+    "variance": 48.77724747474751,
+    "count": 100
+  },
+  "X4_wind_speed_10m_kmh": {
+    "mean": 13.663999999999996,
+    "variance": 41.92010505050505,
+    "count": 100
+  },
+  "X5_cloud_cover_pct": {
+    "mean": 61.68,
+    "variance": 1853.290505050505,
+    "count": 100
+  }
+}

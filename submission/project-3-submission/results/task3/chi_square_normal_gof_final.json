@@ -1,0 +1,10 @@
+{
+  "chi2_stat": 6.011604338086887,
+  "df": 4,
+  "p_value": 0.19828332897999063,
+  "n": 96,
+  "n_bins_initial": 8,
+  "n_bins_used": 6,
+  "expected_min": 5.857991765595809,
+  "note": "Approximate chi-square GOF test for N(0, sigma2_hat)."
+}
