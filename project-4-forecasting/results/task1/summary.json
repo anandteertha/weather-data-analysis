@@ -1,0 +1,68 @@
+{
+  "n_total": 2201,
+  "train_n": 1761,
+  "test_n": 440,
+  "train_start": "2020-02-20",
+  "train_end": "2024-12-15",
+  "test_start": "2024-12-16",
+  "test_end": "2026-02-28",
+  "mean_first_half_original": 20.348363636363633,
+  "mean_second_half_original": 19.9724795640327,
+  "std_first_half_original": 11.554509302344552,
+  "std_second_half_original": 11.773000549438617,
+  "month_means": {
+    "1": 4.439247311827956,
+    "2": 7.884357541899441,
+    "3": 14.615591397849462,
+    "4": 20.102777777777778,
+    "5": 25.06290322580645,
+    "6": 31.43611111111111,
+    "7": 35.303225806451614,
+    "8": 32.785483870967745,
+    "9": 27.87277777777778,
+    "10": 20.78709677419355,
+    "11": 13.838888888888889,
+    "12": 7.740322580645161
+  },
+  "monthly_mean_range": 30.86397849462366,
+  "rolling_window_days": 30,
+  "log_shift_constant": 13.7,
+  "transform_summary": [
+    {
+      "series": "original",
+      "mean_first_half": 20.348363636363633,
+      "mean_second_half": 19.9724795640327,
+      "std_first_half": 11.554509302344552,
+      "std_second_half": 11.773000549438617,
+      "lag1_acf": 0.9077814557926424
+    },
+    {
+      "series": "first_difference",
+      "mean_first_half": 0.01218181818181818,
+      "mean_second_half": -0.0001818181818181957,
+      "std_first_half": 5.116847297266685,
+      "std_second_half": 4.868879463291176,
+      "lag1_acf": -0.09509728324088833
+    },
+    {
+      "series": "seasonal_difference_365",
+      "mean_first_half": 0.19891067538126359,
+      "mean_second_half": -0.3693899782135076,
+      "std_first_half": 7.837512827298955,
+      "std_second_half": 8.358840705987781,
+      "lag1_acf": 0.6207508499601163
+    },
+    {
+      "series": "shifted_log",
+      "mean_first_half": 3.4559391017586814,
+      "mean_second_half": 3.435221541701844,
+      "std_first_half": 0.4085714244322815,
+      "std_second_half": 0.4472142516652044,
+      "lag1_acf": 0.8651468810327707
+    }
+  ],
+  "commentary": {
+    "stationarity": "The original series is not stationary because the monthly averages vary strongly across the calendar year.",
+    "best_visual_transform": "First differencing reduces short-lag persistence most strongly, while seasonal differencing directly targets the annual weather cycle."
+  }
+}

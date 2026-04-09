@@ -1,0 +1,32 @@
+{
+  "seasonal_period": 365,
+  "selected_p": 2,
+  "pacf_significance_band": 0.052458197302074544,
+  "pacf_first_10_lags": [
+    0.6074205181903456,
+    -0.16569421745763213,
+    0.027437179269614642,
+    -0.0016576886975704364,
+    -0.04207681331622015,
+    -0.04685629719828599,
+    0.058275560097811485,
+    0.061309031895003724,
+    -0.06735071296111017,
+    0.03196198460795105
+  ],
+  "coefficients": {
+    "intercept": 0.10861458570483189,
+    "phi_1": 0.7081575260585992,
+    "phi_2": -0.16569421745763213
+  },
+  "training_rmse_original_scale": 6.204436134215862,
+  "training_mape_original_scale": 95.13345126201168,
+  "sigma2_hat_transformed_residuals": 38.578050808430966,
+  "chi_square_normal_gof": {
+    "chi2_stat": 11.246448453487583,
+    "df": 4,
+    "p_value": 0.023929532053776036,
+    "n_bins_used": 6
+  },
+  "commentary": "Seasonal differencing makes the AR model more defensible, and the PACF cuts off after lag 2, so AR(2) is used."
+}
