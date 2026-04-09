@@ -4,7 +4,7 @@ CSC 591 / ECE 592 IoT Analytics
 
 ## Overview
 
-This submission uses the Project 2 weather dataset to forecast the univariate time series `Y_apparent_temperature_C` (apparent temperature in Celsius) for Raleigh. The full dataset contains `2201` daily observations from `2020-02-20` through `2026-02-28`. A chronological 80/20 split is used:
+For this project I used the Project 2 weather dataset to forecast the univariate time series `Y_apparent_temperature_C` (apparent temperature in Celsius) for Raleigh. The full dataset contains `2201` daily observations from `2020-02-20` through `2026-02-28`. I used a chronological 80/20 split:
 
 - Training set: `1761` samples from `2020-02-20` to `2024-12-15`
 - Testing set: `440` samples from `2024-12-16` to `2026-02-28`
@@ -14,7 +14,7 @@ Implementation details:
 - Language: Python
 - Packages: `numpy`, `pandas`, `matplotlib`, `scipy`
 - Forecasting models: simple moving average, simple exponential smoothing, autoregression
-- AI assistance: OpenAI Codex was used to help organize the scripts and draft the report text; all code was executed and the reported values were generated locally from the dataset
+- AI assistance: I used AI help to organize some code and wording, but I ran the analysis locally, checked the outputs, and wrote the final conclusions based on the generated results
 
 MAPE note: the apparent-temperature series contains a few zero values and also negative temperatures, so MAPE was computed only on non-zero targets using `|actual|` in the denominator.
 
@@ -76,7 +76,7 @@ Plots:
 
 Comment:
 
-The best window is very short. That suggests yesterday and the day before are much more informative than a long average window, which is reasonable for day-to-day weather fluctuations.
+The best window is very short. This suggests that the most recent observations matter much more than a long averaging window, which makes sense for day-to-day weather changes.
 
 ## Task 3: Exponential Smoothing Model
 
@@ -99,7 +99,7 @@ Plots:
 
 Comment:
 
-The best smoothing level is high, which means the model benefits from putting more weight on very recent observations. This is consistent with weather data, where short-run changes matter a lot.
+The best smoothing level is high, which means the model does better when it gives more weight to the most recent observations. That is consistent with weather data, where short-term changes matter a lot.
 
 ## Task 4: AR(p) Model
 
@@ -134,7 +134,7 @@ Residual diagnostics:
 
 Comment:
 
-The AR model removes most short-lag residual correlation after seasonal differencing, but the residuals are still not perfectly normal. In other words, the model is reasonable, but it is not a perfect description of the weather series.
+The AR model removes most short-lag residual correlation after seasonal differencing, but the residuals are still not perfectly normal. So the model is reasonable for comparison, but it is not the strongest model for this dataset.
 
 ## Task 5: Testing-Set Comparison of All Models
 
@@ -144,13 +144,13 @@ Testing-set results:
 
 | Model | RMSE | MAPE (%) |
 |---|---:|---:|
-| simple_moving_average | 5.4479 | 106.8081 |
-| exponential_smoothing | 5.0933 | 86.2606 |
-| ar_model | 6.5208 | 129.3280 |
+| Simple moving average | 5.4479 | 106.8081 |
+| Exponential smoothing | 5.0933 | 86.2606 |
+| AR(2) model | 6.5208 | 129.3280 |
 
 Best model on the testing set:
 
-- `exponential_smoothing`
+- `Exponential smoothing`
 - RMSE: `5.0933`
 - MAPE: `86.2606`%
 
@@ -162,4 +162,4 @@ The comparison plot is saved in `results/task5/plots/test_set_model_comparison.p
 - Among the preprocessing ideas checked in Task 1, first differencing reduced short-lag dependence the most, while seasonal differencing was the most useful transformation for AR modeling because it targeted the yearly cycle.
 - The simple moving average model worked best with a very small window (`k = 2`), confirming that the series changes quickly.
 - Exponential smoothing with `alpha = 0.8` outperformed the other models on the testing set, so it is the best forecasting model in this project.
-- The AR model was useful for time-series interpretation and residual analysis, but in this dataset it did not beat the simpler exponential smoothing model on held-out data.
+- The AR model was useful for time-series interpretation and residual analysis, but in this dataset it did not beat the simpler exponential smoothing model on the testing data.

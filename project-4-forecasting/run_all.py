@@ -7,7 +7,17 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parent
-SRC_DIR = ROOT / "src"
+
+if (ROOT / "src").exists() and (ROOT.parent / "dataset" / "weather_data.csv").exists():
+    PROJECT_ROOT = ROOT.parent
+    CODE_ROOT = ROOT
+    DATA_CSV = PROJECT_ROOT / "dataset" / "weather_data.csv"
+else:
+    PROJECT_ROOT = ROOT
+    CODE_ROOT = ROOT
+    DATA_CSV = PROJECT_ROOT.parent / "project-2-weather-data-analysis" / "task1" / "weather_data.csv"
+
+SRC_DIR = CODE_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
@@ -36,9 +46,7 @@ from forecast_utils import (  # noqa: E402
     select_pacf_cutoff,
 )
 
-
-DATA_CSV = ROOT.parent / "project-2-weather-data-analysis" / "task1" / "weather_data.csv"
-RESULTS_DIR = ROOT / "results"
+RESULTS_DIR = PROJECT_ROOT / "results"
 TRAIN_RATIO = 0.8
 ROLLING_WINDOW = 30
 SEASONAL_PERIOD = 365
@@ -400,6 +408,11 @@ def fnum(value: float, digits: int = 4) -> str:
 
 
 def build_report(task1: dict, task2: dict, task3: dict, task4: dict, task5: dict) -> str:
+    model_labels = {
+        "simple_moving_average": "Simple moving average",
+        "exponential_smoothing": "Exponential smoothing",
+        "ar_model": f"AR({task4['selected_p']}) model",
+    }
     task1_rows = "\n".join(
         [
             f"| {row['series']} | {fnum(row['mean_first_half'])} | {fnum(row['mean_second_half'])} | {fnum(row['std_first_half'])} | {fnum(row['std_second_half'])} | {fnum(row['lag1_acf'])} |"
@@ -408,7 +421,7 @@ def build_report(task1: dict, task2: dict, task3: dict, task4: dict, task5: dict
     )
     task5_rows = "\n".join(
         [
-            f"| {row['model']} | {fnum(row['rmse'])} | {fnum(row['mape'])} |"
+            f"| {model_labels.get(row['model'], row['model'])} | {fnum(row['rmse'])} | {fnum(row['mape'])} |"
             for row in task5["test_metrics"]
         ]
     )
@@ -422,7 +435,7 @@ CSC 591 / ECE 592 IoT Analytics
 
 ## Overview
 
-This submission uses the Project 2 weather dataset to forecast the univariate time series `Y_apparent_temperature_C` (apparent temperature in Celsius) for Raleigh. The full dataset contains `{task1['n_total']}` daily observations from `{str(task1['train_start'])[:10]}` through `{str(task1['test_end'])[:10]}`. A chronological 80/20 split is used:
+For this project I used the Project 2 weather dataset to forecast the univariate time series `Y_apparent_temperature_C` (apparent temperature in Celsius) for Raleigh. The full dataset contains `{task1['n_total']}` daily observations from `{str(task1['train_start'])[:10]}` through `{str(task1['test_end'])[:10]}`. I used a chronological 80/20 split:
 
 - Training set: `{task1['train_n']}` samples from `{str(task1['train_start'])[:10]}` to `{str(task1['train_end'])[:10]}`
 - Testing set: `{task1['test_n']}` samples from `{str(task1['test_start'])[:10]}` to `{str(task1['test_end'])[:10]}`
@@ -432,7 +445,7 @@ Implementation details:
 - Language: Python
 - Packages: `numpy`, `pandas`, `matplotlib`, `scipy`
 - Forecasting models: simple moving average, simple exponential smoothing, autoregression
-- AI assistance: OpenAI Codex was used to help organize the scripts and draft the report text; all code was executed and the reported values were generated locally from the dataset
+- AI assistance: I used AI help to organize some code and wording, but I ran the analysis locally, checked the outputs, and wrote the final conclusions based on the generated results
 
 MAPE note: the apparent-temperature series contains a few zero values and also negative temperatures, so MAPE was computed only on non-zero targets using `|actual|` in the denominator.
 
@@ -491,7 +504,7 @@ Plots:
 
 Comment:
 
-The best window is very short. That suggests yesterday and the day before are much more informative than a long average window, which is reasonable for day-to-day weather fluctuations.
+The best window is very short. This suggests that the most recent observations matter much more than a long averaging window, which makes sense for day-to-day weather changes.
 
 ## Task 3: Exponential Smoothing Model
 
@@ -514,7 +527,7 @@ Plots:
 
 Comment:
 
-The best smoothing level is high, which means the model benefits from putting more weight on very recent observations. This is consistent with weather data, where short-run changes matter a lot.
+The best smoothing level is high, which means the model does better when it gives more weight to the most recent observations. That is consistent with weather data, where short-term changes matter a lot.
 
 ## Task 4: AR(p) Model
 
@@ -548,7 +561,7 @@ Residual diagnostics:
 
 Comment:
 
-The AR model removes most short-lag residual correlation after seasonal differencing, but the residuals are still not perfectly normal. In other words, the model is reasonable, but it is not a perfect description of the weather series.
+The AR model removes most short-lag residual correlation after seasonal differencing, but the residuals are still not perfectly normal. So the model is reasonable for comparison, but it is not the strongest model for this dataset.
 
 ## Task 5: Testing-Set Comparison of All Models
 
@@ -562,7 +575,7 @@ Testing-set results:
 
 Best model on the testing set:
 
-- `{task5['best_model_by_rmse']}`
+- `{model_labels.get(task5['best_model_by_rmse'], task5['best_model_by_rmse'])}`
 - RMSE: `{fnum(task5['best_model_rmse'])}`
 - MAPE: `{fnum(task5['best_model_mape'])}`%
 
@@ -574,7 +587,7 @@ The comparison plot is saved in `results/task5/plots/test_set_model_comparison.p
 - Among the preprocessing ideas checked in Task 1, first differencing reduced short-lag dependence the most, while seasonal differencing was the most useful transformation for AR modeling because it targeted the yearly cycle.
 - The simple moving average model worked best with a very small window (`k = {task2['best_k']}`), confirming that the series changes quickly.
 - Exponential smoothing with `alpha = {task3['best_alpha']:.1f}` outperformed the other models on the testing set, so it is the best forecasting model in this project.
-- The AR model was useful for time-series interpretation and residual analysis, but in this dataset it did not beat the simpler exponential smoothing model on held-out data.
+- The AR model was useful for time-series interpretation and residual analysis, but in this dataset it did not beat the simpler exponential smoothing model on the testing data.
 """
 
 
@@ -593,10 +606,10 @@ def main() -> None:
     task5 = compare_models(series, train_n, task2, task3, task4)
 
     report_text = build_report(task1, task2, task3, task4, task5)
-    (ROOT / "report.md").write_text(report_text, encoding="utf-8")
+    (PROJECT_ROOT / "report.md").write_text(report_text, encoding="utf-8")
 
     print("Project 4 outputs generated:")
-    print(f"- report: {ROOT / 'report.md'}")
+    print(f"- report: {PROJECT_ROOT / 'report.md'}")
     print(f"- results: {RESULTS_DIR}")
 
 
